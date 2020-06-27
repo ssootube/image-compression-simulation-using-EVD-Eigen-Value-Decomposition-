@@ -19,7 +19,7 @@ void reset(Mat& mat) {
 bool compare(pair<double, Mat> a, pair<double, Mat> b) {
 	//compare function for sorting eigen values in descending order
 	//고유값을 내림차순으로 정렬하기 위한 비교함수
-	return a.first > b.first;
+	return a.first*a.first > b.first*b.first;
 }
 
 class RGB {
