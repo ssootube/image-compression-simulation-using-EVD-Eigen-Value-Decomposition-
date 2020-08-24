@@ -19,17 +19,17 @@ void reset(Mat& mat) {
 bool compare(pair<double, Mat> a, pair<double, Mat> b) {
 	//compare function for sorting eigen values in descending order
 	//고유값을 내림차순으로 정렬하기 위한 비교함수
-	return a.first*a.first > b.first*b.first;
+	return a.first * a.first > b.first * b.first;
 }
 
 class RGB {
 public:
-	enum { R, G, B};
+	enum { R, G, B };
 	RGB() {
 	}
-	RGB(Mat red,Mat green,Mat blue){
+	RGB(Mat red, Mat green, Mat blue) {
 		size = red.rows();
-		mat[R] = red;	mat[G] =green;	mat[B] =blue;
+		mat[R] = red;	mat[G] = green;	mat[B] = blue;
 		empty = false;
 	}
 	Mat mat[3];
@@ -97,9 +97,9 @@ RGB getMatrixFromImage(Image& img) {
 				green(i, j) = img.getPixel(j, i).g;
 				blue(i, j) = img.getPixel(j, i).b;
 			}
-				}
+		}
 	}
-	return RGB(red,green,blue);
+	return RGB(red, green, blue);
 }
 
 Image getImageFromRGB(RGB& rgb) {
@@ -111,7 +111,7 @@ Image getImageFromRGB(RGB& rgb) {
 			color.r = rgb.mat[RGB::R](i, j);
 			color.g = rgb.mat[RGB::G](i, j);
 			color.b = rgb.mat[RGB::B](i, j);
-			result.setPixel(i, j,color.toInteger() < 0 ? Color(0) : color);
+			result.setPixel(i, j, color.toInteger() < 0 ? Color(0) : color);
 		}
 	}
 	return result;
@@ -130,7 +130,7 @@ int main() {
 		return -1;
 	}
 
-	RenderWindow window(VideoMode(original.getSize().x,original.getSize().y), "Math channel Ssootube Eigen Value Decomposition");
+	RenderWindow window(VideoMode(original.getSize().x, original.getSize().y), "Math channel Ssootube Eigen Value Decomposition");
 	RGB mat;
 	mat = getMatrixFromImage(original);
 	Image applied = getImageFromRGB(mat);
@@ -139,24 +139,29 @@ int main() {
 	int k = 0;
 	cout << "only upper triangular part of the image will be used." << endl;
 	while (window.isOpen()) {
-				Event e;
-				while (window.pollEvent(e)) {
-					if (e.type == Event::Closed)
-						window.close();
+		Event e;
+		while (window.pollEvent(e)) {
+			if (e.type == Event::Closed)
+				window.close();
+			if (e.type == Event::KeyPressed)
+				if (e.key.code == Keyboard::Enter)
+				{
+					window.clear();
+					window.draw(output);
+					window.display();
+					if (k <= mat.size) {
+						mat.getEVDColor(RGB::R, k);
+						mat.getEVDColor(RGB::G, k);
+						mat.getEVDColor(RGB::B, k++);
+					}
+					applied = getImageFromRGB(mat);
+					t.loadFromImage(applied);
+					output.setTexture(t);
+					cout << "press enter to continue. current rank:" << ((k - 2 == -1) ? 0 : k - 2) << endl;
+					break;
 				}
-				window.clear();
-				window.draw(output);
-				window.display();
-				if (k <= mat.size) {
-					mat.getEVDColor(RGB::R, k);
-					mat.getEVDColor(RGB::G, k);
-					mat.getEVDColor(RGB::B, k++);
-				}
-				applied = getImageFromRGB(mat);
-				t.loadFromImage(applied);
-				output.setTexture(t);
-				getchar();
-				cout << "press enter to continue. current rank:" << k-1 << endl;;
-			}
-		return 0;
+		}
+		
+	}
+	return 0;
 }
