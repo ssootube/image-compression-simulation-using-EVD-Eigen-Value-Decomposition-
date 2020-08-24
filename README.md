@@ -5,6 +5,8 @@ language: c++
 
 library: Eigen , SFML
 
+lecture: https://www.youtube.com/watch?v=xX70Ubk335k&feature=youtu.be
+
 this is image compression simulation using EVD(Eigen Value Decomposition).
 since it is not SVD(Singualr Value Decomposition) it uses the upper triangular part of the square image only.
 
